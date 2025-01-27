@@ -5,13 +5,15 @@ in integration_tests/components/validation.
 from dagster._core.definitions.definitions_class import Definitions
 from dagster_components import Component, component_type
 from dagster_components.core.component import ComponentLoadContext
-from dagster_components.core.schema.base import ComponentSchemaBaseModel
+from pydantic import BaseModel, ConfigDict
 from typing_extensions import Self
 
 
-class MyComponentSchema(ComponentSchemaBaseModel):
+class MyComponentSchema(BaseModel):
     a_string: str
     an_int: int
+
+    model_config = ConfigDict(extra="forbid")
 
 
 @component_type
@@ -30,13 +32,17 @@ class MyComponent(Component):
         return Definitions()
 
 
-class MyNestedModel(ComponentSchemaBaseModel):
+class MyNestedModel(BaseModel):
     a_string: str
     an_int: int
 
+    model_config = ConfigDict(extra="forbid")
 
-class MyNestedComponentSchema(ComponentSchemaBaseModel):
+
+class MyNestedComponentSchema(BaseModel):
     nested: dict[str, MyNestedModel]
+
+    model_config = ConfigDict(extra="forbid")
 
 
 @component_type
